@@ -1,6 +1,6 @@
 [project]
 name = "zkeymap"
-version = "0.1.3"
+version = "0.1.4"
 description = "ZMK Keymap Generator"
 readme = "README.md"
 
