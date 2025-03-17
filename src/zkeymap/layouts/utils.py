@@ -29,5 +29,4 @@ def import_all_layouts_json(filename: str | Path) -> Iterator[Layout]:
         info = json.load(src)
         if layouts := info.get("layouts"):
             for name, data in layouts.items():
-                print(name, " -> ", data)
                 yield Layout.from_dict(name, data)

@@ -1015,8 +1015,11 @@ class Layout:
             data = source.get(name).get("layout")
         row = []
         last_x = 0
-        print(data)
-        for j in data:
+
+        def sortkey(a: dict) -> tuple[float,float]:
+            return a.get("y", 0), a.get("x", 0)
+
+        for j in sorted(data, key=sortkey):
             cell = rc(**j)
             w, h = cell.size
             if cell.x <= last_x + w / 2.0 and row:
