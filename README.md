@@ -4,7 +4,7 @@ Python DSL for ZMK Keymaps definitions and files generation.
 
 This tool can generate keymaps, transoforms and layouts in json and svg formats.
 
-![image](https://github.com/mnesarco/zkeymap/raw/main/docs/diagram1.svg)
+![image](https://github.com/mnesarco/zkeymap/raw/main/docs/diagram1.png)
 
 ## Motivation
 
