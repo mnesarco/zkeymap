@@ -19,9 +19,13 @@ def build_drawer_config(config_path: str | Path) -> None:
     raw = {}
 
     for key, alias  in g_aliases.data.items():
-        text = " ".join(alias.resolve())
+        text = " ".join(alias.resolve()).strip()
         if (old := keys.get(text)) and len(old) < len(key):
             continue
+
+        # special case for \]
+        if key == "\\]":
+            key = "]"
 
         if "&" in text:
             raw[text] = key
