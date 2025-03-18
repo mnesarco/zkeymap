@@ -432,7 +432,7 @@ def build_layout_svg_drawer(
     try:
         from keymap_drawer.draw import KeymapDrawer
         from keymap_drawer.physical_layout import QmkLayout
-        from keymap_drawer.config import Config
+        from keymap_drawer.config import Config, DrawConfig
     except ImportError:
         print("[ERROR] keymap_drawer is not installed.")
         sys.exit(-1)
@@ -452,7 +452,7 @@ def build_layout_svg_drawer(
                 yaml.safe_load(config_h)
             )
     else:
-        config_obj = Config()
+        config_obj = Config(draw_config=DrawConfig(dark_mode="auto"))
 
     if not layout:
         layout = main_layout
