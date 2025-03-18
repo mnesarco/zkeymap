@@ -13,9 +13,10 @@ from .generators import (
     build_keymap,
     build_layout_json,
     build_layout_svg,
-    build_layout_svg_drawer,
     build_transform,
 )
+
+from .gen_drawer import build_layout_svg_drawer
 
 from .model import (
     Dance,
@@ -36,4 +37,5 @@ from .model import (
     rc,
     timeout,
     transform,
+    layers,
 )

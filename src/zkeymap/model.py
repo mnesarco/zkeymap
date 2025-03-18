@@ -677,12 +677,21 @@ class positions:
         return iter(self._pos)
 
 
+class layers:
+    def __init__(self, *names: tuple[str|int, ...]) -> None:
+        self._names = names
+
+    def __iter__(self) -> Iterator[str|int]:
+        return iter(self._names)
+
+
 @dataclass
 class Combo:
     name: str
     timeout: int | None = None
     positions: list[int] | None = None
     bindings: str | list[Token] | None = None
+    layers: list[str|int] | None = None
 
     def __truediv__(self, value: str | positions | timeout) -> Combo:
         if isinstance(value, str):
@@ -694,6 +703,49 @@ class Combo:
         if isinstance(value, timeout):
             self.timeout = value.ms
             return self
+        if isinstance(value, layers):
+            self.layers = list(value)
+            return self
+
+    def render(self, writer: Writer) -> None:
+        if not self.positions:
+            msg = f"Invalid combo positions '{self.name}'"
+            raise DefinitionError(msg)
+
+        bindings = self.bindings
+        if not self.bindings:
+            msg = f"Invalid combo bindings '{self.name}': {bindings}"
+            raise DefinitionError(msg)
+
+        if isinstance(self.bindings, str):
+            bindings = list(tokenize(self.bindings))
+
+        bindings_s = [f"<{token.zmk()}>" for token in bindings]
+        timeout = 50 if self.timeout is None else self.timeout
+        kpos = " ".join(map(str, self.positions))
+
+        if self.layers:
+            nums = [str(layer[k].num) for k in self.layers]
+            layers_s = f"layers = <{','.join(nums)}>;"
+        else:
+            layers_s = ""
+
+        writer.ln(
+            f"""
+            / {{
+                combos {{
+                    compatible = "zmk,combos";
+                    combo_{self.name} {{
+                        timeout-ms = <{timeout}>;
+                        key-positions = <{kpos}>;
+                        bindings = {", ".join(bindings_s)};
+                        {layers_s}
+                    }};
+                }};
+            }};
+            """,
+            dedent=True,
+        )
 
 
 class ComboRegistry:
