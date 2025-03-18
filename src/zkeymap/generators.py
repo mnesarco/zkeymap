@@ -412,8 +412,6 @@ class _Namespace:
 def build_layout_svg_drawer(
     *,
     svg_file: str,
-    keymap_file: str,
-    layout_json_file: str,
     config_file: str | None = None,
     layout: Layout | None = None,
 ) -> None:
