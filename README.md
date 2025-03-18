@@ -340,3 +340,7 @@ Key areas of contribution:
 |  ⿻     |         | u2FFb     | Copy |
 |  ⧉     |         |  u29c9    |  Paste |
 |  ⚙     |         |  u2699    |  Bootloader |
+
+## Working examples
+
+- https://github.com/mnesarco/zmk-config
