@@ -430,20 +430,12 @@ def build_layout_svg_drawer(
     import sys
 
     try:
-        from keymap_drawer import __main__ as kd, config as kd_config
+        from keymap_drawer.draw import KeymapDrawer
+        from keymap_drawer.physical_layout import QmkLayout
+        from keymap_drawer.config import Config
     except ImportError:
         print("[ERROR] keymap_drawer is not installed.")
         sys.exit(-1)
-
-    kmf = Path(keymap_file)
-    if not kmf.exists():
-        print(f"[ERROR] keymap file {keymap_file} not found")
-        sys.exit(-2)
-
-    lyf = Path(layout_json_file)
-    if not lyf.exists():
-        print(f"[ERROR] layout (json) file {layout_json_file} not found")
-        sys.exit(-3)
 
     config = None
     if config_file:
@@ -454,39 +446,36 @@ def build_layout_svg_drawer(
 
     import yaml
 
+    if config:
+        with config.open() as config_h:
+            config_obj = Config.parse_obj(
+                yaml.safe_load(config_h)
+            )
+    else:
+        config_obj = Config()
+
     if not layout:
         layout = main_layout
 
     svg_file: Path = Path(svg_file)
-    yaml_file = svg_file.with_suffix(".yaml")
 
-    # Generate the yaml file
-    with kmf.open() as kmf_h:
-        with yaml_file.open("w") as out:
-            if config:
-                with config.open() as config_h:
-                    config_obj = kd_config.Config.parse_obj(
-                        yaml.safe_load(config_h)
-                    )
-            else:
-                config_obj = kd_config.Config()
-            args = _Namespace(
-                columns=layout.num_cols,
-                zmk_keymap=kmf_h,
-                output=out,
-            )
-            kd.parse(args, config_obj)
+    # Generate a keymap_drawer.physical_layout.PhysicalLayout instance
+    # using QmkLayout, since that is natively compatible with info.json-like `layout` contents
+    physical_layout = QmkLayout(
+        layouts={None: [cell.cell("") for cell in layout.cells()]}
+    ).generate(None, config_obj.draw_config.key_h)
 
-    if not yaml_file.exists():
-        print(f"[ERROR] failed to parse keymap {keymap_file}")
-        sys.exit(-5)
+    # Convert layers to a mapping from layer name to list of LayoutKey's on the layer.
+    # We use simply use the `label` of each token here, but this can be customized to pass a dict,
+    # for example `{"t": "Esc", "h": "Ctrl"}` for a hold-tap.
+    #
+    # For example, you can implement a `kd_label` property for each token type and call that here.
+    # See https://github.com/caksoylar/keymap-drawer/blob/main/KEYMAP_SPEC.md#layers for acceptable fields.
+    layers = {
+        layer.display or layer.name: [token.label for token in layer.tokens]
+        for layer in main_layers.data.values()
+    }
 
-    # Generate svg file
-    with yaml_file.open() as src:
-        with svg_file.open("w") as out:
-            args = _Namespace(
-                keymap_yaml=src,
-                qmk_info_json=str(lyf),
-                output=out,
-            )
-            kd.draw(args, config_obj)
+    with svg_file.open("w") as out:
+        kd = KeymapDrawer(config_obj, out, layers=layers, layout=physical_layout)
+        kd.print_board()
