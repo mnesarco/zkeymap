@@ -13,6 +13,7 @@ from .generators import (
     build_keymap,
     build_layout_json,
     build_layout_svg,
+    build_layout_svg_drawer,
     build_transform,
 )
 

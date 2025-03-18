@@ -1,6 +1,6 @@
 [project]
 name = "zkeymap"
-version = "0.1.4"
+version = "0.1.5"
 description = "ZMK Keymap Generator"
 readme = "README.md"
 
@@ -32,3 +32,8 @@ indent-width = 4
 [project.urls]
 Homepage = "https://github.com/mnesarco/zkeymap"
 Issues = "https://github.com/mnesarco/zkeymap/issues"
+
+[project.optional-dependencies]
+drawer = [
+    "keymap-drawer>=0.21.0"
+]

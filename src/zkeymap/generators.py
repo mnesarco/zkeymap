@@ -10,10 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 from datetime import datetime
-from itertools import chain, count
 from pathlib import Path
 from typing import Any, Callable
-import string
 
 from .model import (
     Layer,
@@ -245,7 +243,12 @@ def svg_layer(layer: Layer, layout: Layout) -> SvgBlock:
     return keys
 
 
-def svg_text(content: str, x: float = 0, y: float = 0, style: dict| None = None) -> SvgBlock:
+def svg_text(
+    content: str,
+    x: float = 0,
+    y: float = 0,
+    style: dict | None = None,
+) -> SvgBlock:
     return SvgBlock(f"""
             <text x="{x}" y="{y}"
                 style="{style_str(style or svg_key_text_style)}">
@@ -255,6 +258,7 @@ def svg_text(content: str, x: float = 0, y: float = 0, style: dict| None = None)
                     y="{y}"><![CDATA[{content}]]></tspan>
             </text>
     """)
+
 
 def style_str(style: dict[str, str] | None):
     if style is None:
@@ -291,11 +295,20 @@ def svg_key(
     """
     return SvgBlock(code, x, y, x + w, y + h)
 
-def svg_key_text(label: str, tx: float, ty: float, layer_name: str, row: int, col: int, text_style: dict) -> str:
+
+def svg_key_text(
+    label: str,
+    tx: float,
+    ty: float,
+    layer_name: str,
+    row: int,
+    col: int,
+    text_style: dict,
+) -> str:
     spans = label.split()
     fs = svg_key_font_size
     lines = []
-    ty = ty - (fs * (len(spans)-1) * 1.2)/2.0
+    ty = ty - (fs * (len(spans) - 1) * 1.2) / 2.0
     y = ty
     for i, txt in enumerate(spans):
         lines.append(f"""
@@ -316,6 +329,7 @@ def svg_key_text(label: str, tx: float, ty: float, layer_name: str, row: int, co
             {content}
         </text>
         """
+
 
 svg_key_font_size = 5
 
@@ -385,3 +399,94 @@ def svg_content(name: str, body: SvgBlock) -> str:
         </g>
     </svg>
     """.strip()
+
+
+class _Namespace:
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
+
+    def __getattr__(self, name: str) -> str:
+        return self.__dict__.get(name)
+
+
+def build_layout_svg_drawer(
+    *,
+    svg_file: str,
+    keymap_file: str,
+    layout_json_file: str,
+    config_file: str | None = None,
+    layout: Layout | None = None,
+) -> None:
+    """
+    Generate Svg Graphics using the external tool keymap_drawer if installed.
+
+    This function calla an external library to render the SVG (keymap-drawer)
+    So to make it work, the user needs to install it previously.
+
+    ```
+    pip install keymap-drawer
+    ```
+    """
+    import sys
+
+    try:
+        from keymap_drawer import __main__ as kd, config as kd_config
+    except ImportError:
+        print("[ERROR] keymap_drawer is not installed.")
+        sys.exit(-1)
+
+    kmf = Path(keymap_file)
+    if not kmf.exists():
+        print(f"[ERROR] keymap file {keymap_file} not found")
+        sys.exit(-2)
+
+    lyf = Path(layout_json_file)
+    if not lyf.exists():
+        print(f"[ERROR] layout (json) file {layout_json_file} not found")
+        sys.exit(-3)
+
+    config = None
+    if config_file:
+        config = Path(config_file)
+        if not config.exists():
+            print(f"[ERROR] config file {config_file} not found")
+            sys.exit(-4)
+
+    import yaml
+
+    if not layout:
+        layout = main_layout
+
+    svg_file: Path = Path(svg_file)
+    yaml_file = svg_file.with_suffix(".yaml")
+
+    # Generate the yaml file
+    with kmf.open() as kmf_h:
+        with yaml_file.open("w") as out:
+            if config:
+                with config.open() as config_h:
+                    config_obj = kd_config.Config.parse_obj(
+                        yaml.safe_load(config_h)
+                    )
+            else:
+                config_obj = kd_config.Config()
+            args = _Namespace(
+                columns=layout.num_cols,
+                zmk_keymap=kmf_h,
+                output=out,
+            )
+            kd.parse(args, config_obj)
+
+    if not yaml_file.exists():
+        print(f"[ERROR] failed to parse keymap {keymap_file}")
+        sys.exit(-5)
+
+    # Generate svg file
+    with yaml_file.open() as src:
+        with svg_file.open("w") as out:
+            args = _Namespace(
+                keymap_yaml=src,
+                qmk_info_json=str(lyf),
+                output=out,
+            )
+            kd.draw(args, config_obj)
