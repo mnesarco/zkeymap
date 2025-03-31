@@ -27,7 +27,7 @@ pip install zkeymap
 
 ### 3. Write your keymap in zkeymap language, here is an example `splitkb.py`:
 
-[](src/zkeymap/demo/splitkb.py)
+[src/zkeymap/demo/splitkb.py](src/zkeymap/demo/splitkb.py)
 
 ### 4. Generate your devicetree files:
 
