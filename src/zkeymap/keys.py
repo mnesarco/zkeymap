@@ -5,22 +5,25 @@
 Default key aliases.
 """
 
-from zkeymap import alias, Mods, UnicodeSeq
+__all__ = ()
+
 from string import ascii_lowercase
+
+from zkeymap.lang import alias, label, mod
 
 # Modifiers
 
-alias / ("lshift", "shift", "⇧") / "LSHIFT" / Mods("lshift")
-alias / ("rshift", "r⇧") / "RSHIFT" / Mods("rshift")
+alias / ("lshift", "shift", "⇧") / "LSHIFT" / mod.LShift
+alias / ("rshift", "r⇧") / "RSHIFT" / mod.RShift
 
-alias / ("lctrl", "ctrl", "⎈") / "LCTRL" / Mods("lctrl")
-alias / ("rctrl", "r⎈") / "RCTRL" / Mods("rctrl")
+alias / ("lctrl", "ctrl", "⎈") / "LCTRL" / mod.LCtrl
+alias / ("rctrl", "r⎈") / "RCTRL" / mod.RCtrl
 
-alias / ("lalt", "alt", "⎇" )/ "LALT" / Mods("lalt")
-alias / ("ralt", "r⎇") / "RALT" / Mods("ralt")
+alias / ("lalt", "alt", "⎇" )/ "LALT" / mod.LAlt
+alias / ("ralt", "r⎇") / "RALT" / mod.RAlt
 
-alias / ("lgui", "gui", "⌘") / "LGUI" / Mods("lgui")
-alias / ("rgui", "r⌘") / "RGUI" / Mods("rgui")
+alias / ("lgui", "gui", "⌘") / "LGUI" / mod.LGui
+alias / ("rgui", "r⌘") / "RGUI" / mod.RGui
 
 # Ascii Letters
 
@@ -35,7 +38,7 @@ for d in range(10):
 # Function keys
 
 for d in range(1, 25):
-    alias / f"f{d}" / f"F{d}"
+    alias / f"f{d}" / f"F{d}" / label(f"F{d}")
 
 # Power
 
@@ -62,7 +65,7 @@ alias / "=" / "EQL"
 alias / "+" / "PLUS"
 alias / "[" / "LBKT"
 alias / "{" / "LBRC"
-alias / "\\]" / "RBKT"
+alias / "\\]" / "RBKT" / label("]")
 alias / "}" / "RBRC"
 alias / "\\" / "BSLH"
 alias / "|" / "PIPE"
@@ -73,7 +76,7 @@ alias / ":" / "COLON"
 alias / "'" / "SQT"
 alias / '"' / "DQT"
 alias / "`" / "GRAVE"
-alias / "grv" / "GRAVE"
+alias / "grv" / "GRAVE" / label("`")
 alias / "G~" / "TILDE"
 alias / "," / "COMMA"
 alias / "<" / "LT"
@@ -158,12 +161,10 @@ alias / ("out_ble", "→ᛒ") / "&out OUT_BLE"
 alias / ("out_usb", "→usb") / "&out OUT_USB"
 alias / ("out_tog", "usb/ᛒ") / "&out OUT_TOG"
 
-# Unicode sequences
+# misc behaviors
+alias / "▽" / "&trans"
+alias / "xx" / "&none"
 
-UnicodeLinux = UnicodeSeq("<&macro_tap &kp LS(LC(U))>", "<&macro_tap &kp SPACE>")
-UnicodeWindowsAlt = UnicodeSeq("<&macro_press &kp LALT>", "<&macro_release &kp LALT>")
-UnicodeWindows = UnicodeSeq("<&macro_tap &kp RALT &kp U>", "<&macro_tap &kp RET>")
-UnicodeMac = UnicodeWindowsAlt
 
 """
 TODO: Add more aliases

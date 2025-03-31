@@ -1,6 +1,6 @@
 [project]
 name = "zkeymap"
-version = "0.1.7"
+version = "0.1.8"
 description = "ZMK Keymap Generator"
 readme = "README.md"
 
@@ -19,7 +19,11 @@ authors = [
 ]
 
 requires-python = ">=3.10"
-dependencies = []
+
+dependencies = [
+    "lark>=1.2.2",
+    "pyyaml>=6.0.2",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -28,6 +32,29 @@ build-backend = "hatchling.build"
 [tool.ruff]
 line-length = 100
 indent-width = 4
+
+[tool.ruff.lint]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+select = ["ALL"]
+ignore = [
+    "D200",
+    "D212",
+    "D202",
+    "D401",
+    "D100",
+    "ANN401"
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "pip>=25.0.1",
+    "pytest>=8.3.5",
+    "typing-extensions>=4.12.2",
+]
+
+
+
 
 [project.urls]
 Homepage = "https://github.com/mnesarco/zkeymap"

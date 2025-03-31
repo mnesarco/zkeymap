@@ -2,7 +2,5 @@
 # SPDX-License-Identifier: MIT
 
 """
-ZKeymap.
-
-Domain Specific Language for ZMK Keymap definitions.
+ZKeymap: Unit Tests.
 """

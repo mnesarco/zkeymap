@@ -1,18 +1,22 @@
 # Copyright (c) 2025 Frank David Martínez Muñoz <mnesarco>
 # SPDX-License-Identifier: MIT
 
+# ruff: noqa: ERA001
+
 """
 Spanish Latin American key aliases.
 """
 
+__all__ = ()
+
 # fmt: off
 
-from zkeymap import alias
+from zkeymap.lang import alias, label
 
 alias / "|"             / "GRAVE"
 alias / "'"             / "MINUS"
 alias / "¿"             / "EQL"
-alias / ("acut", "´")   / "LBKT"
+alias / ("acut", "´")   / "LBKT"  # noqa: RUF001
 alias / "+"             / "RBKT"
 alias / "ñ"             / "SEMI"
 alias / "{"             / "SQT"
@@ -23,7 +27,7 @@ alias / ("dot", ".")    /  "DOT"
 alias / "-"             / "SLASH"
 alias / "º"             / "LS(GRAVE)"
 alias / "!"             / "LS(N1)"
-alias / "\""            / "LS(N2)"
+alias / "\""            / "LS(N2)"  # noqa: Q003
 alias / "#"             / "LS(N3)"
 alias / "$"             / "LS(N4)"
 alias / "%"             / "LS(N5)"
@@ -34,10 +38,10 @@ alias / ")"             / "LS(N9)"
 alias / "="             / "LS(N0)"
 alias / "?"             / "LS(MINUS)"
 alias / "¿"             / "LS(EQL)"
-alias / "diae"          / "LS(LBRC)"
+alias / "diae"          / "LS(LBRC)" / label("¨")
 alias / "*"             / "LS(RBRC)"
 alias / "["             / "LS(SQT)"
-alias / "\\]"           / "LS(NUHS)"
+alias / "\\]"           / "LS(NUHS)" / label("]")
 alias / ">"             / "LS(NUBS)"
 alias / ";"             / "LS(COMMA)"
 alias / ":"             / "LS(DOT)"
@@ -46,7 +50,7 @@ alias / "¬"             / "RA(GRAVE)"
 alias / "·"             / "RA(N3)"
 alias / "½"             / "RA(N5)"
 alias / "\\"            / "RA(MINUS)"
-alias / "¸"             / "RA(N0)"
+alias / "¸"             / "RA(N0)"  # noqa: RUF001
 alias / "@"             / "RA(Q)"
 alias / "ł"             / "RA(W)"
 alias / "€"             / "RA(E)"

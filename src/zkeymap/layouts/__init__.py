@@ -4,7 +4,9 @@
 # ruff: noqa: F401
 
 """
-Builtin layouts for common keyboards
+ZKeymap: Layout definitions and importers.
+
+Standard or popular layouts can be included under this package.
 """
 
-from .utils import import_layout_json, import_all_layouts_json
+from .utils import JsonImportError, import_all_layouts_json, import_layout_json

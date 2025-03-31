@@ -25,82 +25,9 @@ pip install zkeymap
 
 ### 2. Add a python file to your config directory, for example `mykeymap.py`
 
-### 3. Write your keymap in zkeymap language, here is an example `mykeymap.py`:
+### 3. Write your keymap in zkeymap language, here is an example `splitkb.py`:
 
-```python
-# Import zkeymap language artifacts
-from zkeymap import (
-    alias,
-    layer,
-    label,
-    build_keymap,
-    build_transform,
-    layout,
-    rc,
-    keys,     # Import base key definitions
-    keys_la,  # Import Language specific keys (Latam)
-)
-
-# Define physical layout: left: 6x3+4 right 6x3+4
-#--------------------------------------|-----------------------------
-layout / [rc,   rc,   rc,  rc, rc, rc,     rc, rc, rc, rc, rc, rc]
-layout / [rc,   rc,   rc,  rc, rc, rc,     rc, rc, rc, rc, rc, rc]
-layout / [rc,   rc,   rc,  rc, rc, rc,     rc, rc, rc, rc, rc, rc]
-layout / [None, None, rc,  rc, rc, rc,     rc, rc, rc, rc]
-
-# Linux unicode composers
-uc = keys.UnicodeLinux
-
-# User defined aliases
-alias / "cw" /  "&caps_word"
-alias / "zw"/ "LC(LA(DOWN))" # Desktop Zoom out (Linux Mint)
-alias / "∴" / uc("∴", "∴", name="t3p") # Exotic Unicode char
-
-# Layers -----------------
-
-layer / "def" / label("DEF") / r"""
-    {⌘ esc}  [ q ] [ w ] [ f ] [ p ] [ b ]      [ j ] [ l ] [ u ] [ y ] [ acut ]    [ñ]
-    {⎇ tab} {⇧ a}  [ r ] [ s ] [ t ] [ g ]      [ m ] [ n ] [ e ] [ i ] {⇧ o}      <cw>
-    {⎈  \ }  [ z ] [ x ] [ c ] [ d ] [ v ]      [ k ] [ h ] [ , ] [ . ] [ ; ]     [ ⏎ ]
-           (num tab) (sym ⌫) (nav ␣) [⇧ ⎇]      [r⎇] (nav ␣) (sym ⌫) (adj del)
-    """
-
-layer / "num" / label("NUM") / r"""
-    _____   [ * ] [ 7 ] [ 8 ] [ 9 ] [ / ]      [ / ] [ 7 ] [ 8 ] [ 9 ] [ * ] [ ∴ ]
-    [ , ]   [ 0 ] [ 4 ] [ 5 ] [ 6 ] [ - ]      [ - ] [ 4 ] [ 5 ] [ 6 ] [ 0 ] [ , ]
-    [ zw ]  [ . ] [ 1 ] [ 2 ] [ 3 ] [ + ]      [ + ] [ 1 ] [ 2 ] [ 3 ] [ . ] _____
-                  _____ _____ _____ _____      _____ _____ _____ _____
-    """
-
-layer / "sym" / label("SYM1") / r"""
-    [ | ]    [ ! ] [ " ] [ # ] [ $ ] [ % ]      [ & ] [ / ] [ [ ] [ \] ] [ = ] [ ? ]
-    [ grv ]  [ * ] [ ' ] [ : ] [ _ ] [ - ]      [ - ] [ ( ] [ ) ] [ {  ] [ } ] _____
-    [ diae ] [ @ ] [ ~ ] [ ^ ] [ = ] [ + ]      [ + ] [ ' ] [ < ] [ >  ] [ \ ] _____
-                   (adj) _____ _____ _____      _____ _____ (num~) _____
-    """
-
-layer / "nav" / label("NAV") / r"""
-    _____ [ f1 ] [ f2 ] [ f3 ] [ f4 ] [ f5  ]     _____     [ pgup ] [  ↑  ] [ pgdn ] [  f10 ] [ f11 ]
-    _____ [ ⇧  ] [ '  ] [ :  ] [ _  ] [ -   ]     [  home ] [   ←  ] [  ↓  ] [   →  ] [  end ] [ f12 ]
-    _____ [ f6 ] [ f7 ] [ f8 ] [ f9 ] [ f10 ]     [ ⎈ home] [ ⎈ ←  ]  xxxxx  [ ⎈ →  ] [⎈ end ]  _____
-                      _____ _____ _____ _____     _____ _____ _____ _____
-    """
-
-layer / "adj" / label("ADJ") / r"""
-    <⚙>    _____     _____   _____ _____ _____      _____ _____ _____ _____ _____ <⚙>
-    <ᛒclr> <ᛒ0>      <ᛒ1>    <ᛒ2>  <ᛒ3>  <ᛒ4>       <ᛒ4>  <ᛒ3>  <ᛒ2>  <ᛒ1>  <ᛒ0>  <ᛒclr>
-    _____  [ nlck ]  <usb/ᛒ> _____ _____ _____      _____ _____ _____ _____ _____ _____
-                     _____   _____ _____ _____      _____ _____ _____ _____
-    """
-
-# Generate files -------
-
-build_keymap("marz44w_inc.keymap")
-build_transform("marz44w_transform_inc.dtsi")
-build_layout_json("marz44w_layout.json")
-build_layout_svg("marz44w_layout.svg")
-
-```
+[](src/zkeymap/demo/splitkb.py)
 
 ### 4. Generate your devicetree files:
 
@@ -112,10 +39,13 @@ That will generate four files as per the example:
 
 | File | Content| Format |
 |------|--------|--------|
-marz44w_inc.keymap| Keymap, macros, dances, encoders| devicetree |
-marz44w_transform_inc.dtsi| zmk,matrix-transform | devicetree |
-marz44w_layout.json | physical layout | QMK info.json |
-marz44w_layout.svg | Graphical layout | svg |
+splitkb_keymap.dtsi| Keymap, macros, dances, encoders| devicetree |
+splitkb_transform.dtsi| zmk,matrix-transform | devicetree |
+splitkb_layout.dtsi| zmk,physical-layout | devicetree |
+splitkb_info.json | physical layout | QMK info.json |
+splitkb_layout.svg | Graphical layout (built-in generator) | svg |
+splitkb_drawer.svg | Graphical layout (keymap-drawer generator) | svg |
+splitkb_switches_layout.svg | Graphical layout for switches holes | svg |
 
 ### 5. Then in your zmk keymap file remove the keymap node and include the generated file example:
 
@@ -125,33 +55,22 @@ marz44w_layout.svg | Graphical layout | svg |
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/outputs.h>
-
-&lt { quick_tap_ms = <220>; };
-&mt { quick_tap_ms = <220>; };
+#include <dt-bindings/zmk/matrix_transform.h>
 
 // +------------------------------------+
 // | Include the generated keymap here: |
 // +------------------------------------+
-#include "marz44w_inc.keymap"
-
-```
-
-### 6. If you also generate the transform file (optional), then import it into your dtsi. Example:
-
-```c
-#include <dt-bindings/zmk/matrix_transform.h>
+#include "splitkb_keymap.dtsi"
+#include "splitkb_transform.dtsi"
+#include "splitkb_layout.dtsi"
 
 / {
 
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &marz_split_3x6_4_transform;
+        zmk,physical-layout = &marz_split_3x6_4;
     };
-
-    // +------------------------------------+
-    // | Include the generated keymap here: |
-    // +------------------------------------+
-    #include "marz44w_transform_inc.dtsi"
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
@@ -246,25 +165,22 @@ Where `LAY` is a layer, `a` is an alias and `X` is the alias resolution.
 |-------------|---------------|------------------------|
 | ( LAY )     | &mo LAY       | momentary layer        |
 | ( LAY a )   | &lt LAY X     | layer tap LAY and X    |
-| ( LAY ~ )   | &lt LAY TILDE | layer tap LAY and ~    |
-| ( LAY~ )    | &sl LAY       | sticky layer LAY. See the difference with previous  |
-| ( LAY! )    | &to LAY       | absolute layer LAY        |
-| ( LAY/ )    | &tog LAY      | toggle layer LAY          |
+| ( LAY / ~ )   | &lt LAY TILDE | layer tap LAY and ~    |
+| ( LAY ~)    | &sl LAY       | sticky layer LAY. See the difference with previous  |
+| ( LAY !)    | &to LAY       | absolute layer LAY        |
+| ( LAY /)    | &tog LAY      | toggle layer LAY          |
 
 ### Raw ZMK stuff
 
 Triangle brackets syntax `< whatever >`.
 
-Content inside `<` and `>` is resolved to raw ZMK code,
-if it can be resolved to an alias it will be resolved if not
-it will be copied verbatim to the output.
+Content inside `<` and `>` is resolved to raw ZMK code.
 
 Example:
-Where `a` is an alias and `X` is the alias resolution.
 
 | syntax       | compiles to   | Notes                  |
 |--------------|---------------|------------------------|
-| <a>          | X             | Simple alias resolution |
+| <A>          | A             | raw zmk code           |
 | <&lt 1 A>    | &lt 1 A       | raw zmk code            |
 | <&caps_word> | &caps_word    | raw zmk code            |
 | <&kp LCTRL>  | &kp LCTRL     | raw zmk code            |
@@ -275,13 +191,13 @@ Where `a` is an alias and `X` is the alias resolution.
 Definitions of macros is done using aliases:
 
 ```python
-alias / "hello" / Macro("[h] [e] [l] [l] [o]")
+alias / "hello" / macro("[shift h] e l l o")
 ```
 
 Then it can be used in a layer:
 
 ```python
-layer / "def" / r""" <hello> """
+layer / "def" / r""" hello """
 ```
 
 ### Unicode
@@ -290,13 +206,13 @@ A special case for Unicode macros allows to define lower and upper variations:
 
 ```python
 
-alias / "á" / uc("á", "Á", "Aa")
+alias / "∴" / uc(name="t3p", char="∴", shifted="△")
 
-layer / "def" / r""" [ á ] """
+layer / "def" / r""" [ ∴ ] """
 
 ```
 
-In this case `[ á ]` will be translated to `á` on tap and to `Á` on Shift tap.
+In this case `[ ∴ ]` will be translated to `∴` on tap and to `△` on Shift tap.
 
 ## Status
 
@@ -344,3 +260,7 @@ Key areas of contribution:
 ## Working examples
 
 - https://github.com/mnesarco/zmk-config
+
+## AI Usage
+
+Codeium AI was used to generate docstrings and basic unit tests.
