@@ -7,7 +7,6 @@ ZKeymap: Internal implementation of builtin svg generator.
 
 from __future__ import annotations
 
-import datetime
 import html
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -786,9 +785,9 @@ def layout(
         )
 
         content += render_centered_text(
-            str(datetime.datetime.now().isoformat(" ")),  # noqa: DTZ005
+            "https://pypi.org/project/zkeymap/",
             width=size_w,
-            css_class="generated-date",
+            css_class="zkeymap-link",
             font_size=DOC_FONT_SIZE * 0.7,
         )
 

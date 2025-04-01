@@ -6,7 +6,7 @@ ZKeymap: ZMK Keymap Generators. Implementation details.
 """
 
 from dataclasses import asdict
-from itertools import chain
+from itertools import chain, count
 from pathlib import Path
 from textwrap import dedent, indent
 
@@ -26,6 +26,7 @@ from zkeymap.api import (
     MutedBx,
     TransparentBx,
     env,
+    logger,
 )
 from zkeymap.generators.utils import (
     ascii_box,
@@ -97,6 +98,7 @@ KEYMAP = """
     {morphs}
     {combos}
     {dances}
+    {conditional_layers}
 
     / {{
         keymap {{
@@ -176,9 +178,19 @@ LAYER = """
         {bindings}
         >;
     }};
+    """
 
-"""
-
+COND_LAYERS = """
+    / {{
+        conditional_layers {{
+            compatible = "zmk,conditional-layers";
+            {name} {{
+                if-layers = <{source}>;
+                then-layer = <{target}>;
+            }};
+        }};
+    }};
+    """
 
 def keymap(layout: Layout, filename: str | Path) -> None:
     """Generate keymap file."""
@@ -195,6 +207,7 @@ def keymap(layout: Layout, filename: str | Path) -> None:
                     combos=combos(),
                     dances=tap_dances(),
                     layers=render_layers(layout),
+                    conditional_layers=conditional_layers(),
                 ),
             ),
         )
@@ -212,6 +225,29 @@ def layer_defs() -> str:
         defs.append(f"\n#define {layer_macro_id(layer)} {layer.num}")
     return indent("".join(defs), " " * 4)
 
+
+def conditional_layers() -> str:
+    """
+    Return conditional layers devicetree node.
+
+    A conditional layer is a layer that is only active when the layers
+    specified in the `if-layers` field are active.
+    """
+    defs = []
+    num = count()
+    for _, layer in env.layers:
+        if layer.if_layers:
+            sources = [layer_macro_id(i) for i in env.layers.resolve_iter(layer.if_layers)]
+            if len(sources) < 2:
+                logger.warning("Layer %s has less than 2 if-layers", layer.name)
+            defs.append(
+                COND_LAYERS.format(
+                    name=f"{layer.name}_cond{next(num)}",
+                    source=" ".join(sources),
+                    target=layer_macro_id(layer),
+                ),
+            )
+    return "\n".join(defs)
 
 def macros() -> str:
     """Return all macros devicetree."""

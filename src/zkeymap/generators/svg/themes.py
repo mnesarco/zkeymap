@@ -65,7 +65,7 @@ light = """
         opacity: 0.5;
     }
 
-    .zkeymap-notice, .generated-date {
+    .zkeymap-notice, .zkeymap-link {
         opacity: 0.5;
     }
 
@@ -132,7 +132,7 @@ dark = """
         opacity: 0.9;
     }
 
-    .zkeymap-notice, .generated-date {
+    .zkeymap-notice, .zkeymap-link {
         opacity: 0.5;
     }
 
