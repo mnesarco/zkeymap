@@ -300,7 +300,7 @@ class Alias:
     """
 
     name: str | None = None
-    content: str | Morph | Macro | None = None
+    content: str | Morph | Macro | Dance | None = None
     modifiers: Modifiers | None = None
     display_override: str | None = None
 
@@ -333,6 +333,8 @@ class Alias:
                 return f"&{self.content.name}"
             case Macro():
                 return f"&{self.content.name}"
+            case Dance():
+                return f"&{self.content.name}"
             case _:
                 return ""
 
@@ -346,6 +348,7 @@ class Layer:
     display: str | None = None
     behaviors: list[Behavior] | None = None
     if_layers: list[str] | None = None
+    source: str | None = None
 
 
 @dataclass

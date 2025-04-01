@@ -28,6 +28,7 @@ from zkeymap.api import (
     env,
 )
 from zkeymap.generators.utils import (
+    ascii_box,
     file_header_comment,
     file_tag,
     path_with_suffix,
@@ -95,6 +96,7 @@ KEYMAP = """
     {macros}
     {morphs}
     {combos}
+    {dances}
 
     / {{
         keymap {{
@@ -152,10 +154,24 @@ COMBO = """
     }};
     """
 
+DANCE = """
+    / {{
+        behaviors {{
+            {name}: {name} {{
+                compatible = "zmk,behavior-tap-dance";
+                #binding-cells = <0>;
+                bindings = {bindings};
+                {tapping_term}
+            }};
+        }};
+    }};
+    """
 
 LAYER = """
+    {header}
     {name} {{
         display-name = "{display}";
+        {comment}
         bindings = <
         {bindings}
         >;
@@ -177,6 +193,7 @@ def keymap(layout: Layout, filename: str | Path) -> None:
                     macros=macros(),
                     morphs=morphs(),
                     combos=combos(),
+                    dances=tap_dances(),
                     layers=render_layers(layout),
                 ),
             ),
@@ -202,8 +219,8 @@ def macros() -> str:
 
     items = []
     for name, macro in macros:
-        wait_ms = "" if macro.wait_ms is None else "wait-ms = <{macro.wait_ms}>;"
-        tap_ms = "" if macro.tap_ms is None else "tap-ms = <{macro.tap_ms}>;"
+        wait_ms = "" if macro.wait_ms is None else f"wait-ms = <{macro.wait_ms}>;"
+        tap_ms = "" if macro.tap_ms is None else f"tap-ms = <{macro.tap_ms}>;"
         items.append(
             MACRO.format(
                 name=name,
@@ -258,6 +275,24 @@ def combos() -> str:
                 bindings=bindings([combo.bindings]),
                 layers=if_layers,
                 slow_release=slow_release,
+            ),
+        )
+    return "\n".join(items)
+
+
+def tap_dances() -> str:
+    """Return all tap dances devicetree."""
+    from zkeymap.private.oracle import dances
+
+    items = []
+    for name, dance in dances:
+        tapping_term = "" if dance.tapping_term_ms is None else f"tapping-term-ms = <{dance.tapping_term_ms}>;"
+        bindings_ = ", ".join(f"<{bindings([b])}>" for b in dance.bindings)
+        items.append(
+            DANCE.format(
+                name=name,
+                tapping_term=tapping_term,
+                bindings=bindings_,
             ),
         )
     return "\n".join(items)
@@ -360,6 +395,8 @@ def render_layers(layout: Layout) -> str:
                     name=layer.name,
                     display=layer.display,
                     bindings=table_str.content,
+                    comment=ascii_box(layer.source, 8),
+                    header=ascii_box(f"Layer: {layer.name}: num={layer.num}, display={layer.display}", 4),
                 ),
             ),
         )

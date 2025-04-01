@@ -29,11 +29,11 @@ if TYPE_CHECKING:
 class AliasBuilder:
     alias: Alias
 
-    def __truediv__(self, value: str | label | Macro | Morph | Modifiers) -> AliasBuilder:
+    def __truediv__(self, value: str | label | Macro | Morph | Dance | Modifiers) -> AliasBuilder:
         match value:
             case label():
                 self.alias.display_override = value
-            case str() | Macro() | Morph():
+            case str() | Macro() | Morph() | Dance():
                 self.alias.content = value
             case Modifiers():
                 self.alias.modifiers = value
@@ -81,6 +81,7 @@ class LayerBuilder:
                 self.layer.display = value
             case str():
                 self.layer.behaviors = parse_keymap(value)
+                self.layer.source = value
             case _:
                 msg = f"Unsupported parameter type {type(value)}"
                 raise TypeError(msg)
@@ -103,7 +104,7 @@ class AliasKeyword:
         return AliasBuilder(aliases.add(name))
 
 
-def combo(
+def combo(  # noqa: PLR0913
     bindings: str,
     key_positions: list[int],
     *,

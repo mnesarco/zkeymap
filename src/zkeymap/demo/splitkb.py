@@ -12,6 +12,7 @@ from zkeymap import keys, keys_la  # noqa: F401
 from zkeymap.lang import (
     alias,
     combo,
+    tap_dance,
     if_layers,
     label,
     layer,
@@ -32,6 +33,7 @@ layout = marz_split_3x6_4.layout
 alias / "cw" / "&caps_word" / label("⇪")
 alias / "zw" / "LC(LA(DOWN))"  # Windows Zoom (Linux Mint)
 alias / "∴" / uc(name="t3p", char="∴", shifted="△")  # Fancy unicode chars
+alias / "td" / tap_dance("1 2 3", tapping_term_ms=200) # Just a conter tap dance example
 
 # Define macros
 alias / "M1" / macro("[⇧ h] e l l o", name="hello")
@@ -48,7 +50,7 @@ layer / "def" / label("DEF") / r"""
 layer / "num" / label("NUM") / r"""
     _____   [ * ] [ 7 ] [ 8 ] [ 9 ] [ / ]      [ / ] [ 7 ] [ 8 ] [ 9 ] [ * ] [ ∴ ]
     [ , ]   [ 0 ] [ 4 ] [ 5 ] [ 6 ] [ - ]      [ - ] [ 4 ] [ 5 ] [ 6 ] [ 0 ] [ , ]
-    [ zw ]  [ . ] [ 1 ] [ 2 ] [ 3 ] [ + ]      [ + ] [ 1 ] [ 2 ] [ 3 ] [ . ] _____
+    [ zw ]  [ . ] [ 1 ] [ 2 ] [ 3 ] [ td ]     [ + ] [ 1 ] [ 2 ] [ 3 ] [ . ] _____
                   _____ _____ _____ _____      _____ _____ _____ _____
     """
 

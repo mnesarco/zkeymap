@@ -11,3 +11,6 @@ wheels/
 
 # Playground
 _playground.py
+
+# Trash
+/splitkb_*
