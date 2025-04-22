@@ -72,7 +72,7 @@ alias / "ħ"             / "RA(H)"
 alias / "ˀ"             / "RA(J)"
 alias / "ĸ"             / "RA(k)"
 alias / "ł"             / "RA(L)"
-alias / ("`", "grv")    / "RA(GRAVE)" / label("`")
+alias / ("`", "grv")    / "RA(NUHS)" / label("`")
 alias / "«"             / "RA(Z)"
 alias / "»"             / "RA(X)"
 alias / "¢"             / "RA(C)"
