@@ -144,8 +144,7 @@ def combo(  # noqa: PLR0913
 
 
 def macro(
-    bindings: str,
-    *,
+    *bindings: str,
     name: str | None = None,
     wait_ms: int | None = None,
     tap_ms: int | None = None,
@@ -159,7 +158,7 @@ def macro(
     :param tap_ms: Optional tap timeout in milliseconds.
     :return: The declared macro.
     """
-    macro = Macro(name, parse_keymap(bindings), wait_ms, tap_ms)
+    macro = Macro(name, parse_keymap(" ".join(bindings)), wait_ms, tap_ms)
     macros.add(macro)
     return macro
 
