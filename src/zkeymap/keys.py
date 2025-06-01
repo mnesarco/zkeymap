@@ -100,7 +100,7 @@ alias / ("pscrn", "⎙") / "PSCRN"
 alias / "slck" / "SLCK"
 alias / "pause" / "PAUSE_BREAK"
 alias / "ins" / "INS"
-alias / "del" / "DEL"
+alias / ("del", "⌦") / "DEL"
 
 # Navigation
 
@@ -163,7 +163,7 @@ alias / ("out_tog", "usb/ᛒ") / "&out OUT_TOG"
 
 # misc behaviors
 alias / "▽" / "&trans"
-alias / "xx" / "&none"
+alias / ("xx", "⌽") / "&none"
 
 
 """
