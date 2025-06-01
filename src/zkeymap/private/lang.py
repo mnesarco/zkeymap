@@ -73,7 +73,7 @@ class LayerBuilder:
 
     layer: Layer
 
-    def __truediv__(self, value: str | label | if_layers) -> LayerBuilder:
+    def __truediv__(self, value: str | label | if_layers | tuple[str, ...]) -> LayerBuilder:
         match value:
             case if_layers():
                 self.layer.if_layers = value.layers
@@ -82,6 +82,10 @@ class LayerBuilder:
             case str():
                 self.layer.behaviors = parse_keymap(value)
                 self.layer.source = value
+            case tuple():
+                source = " ".join(value)
+                self.layer.behaviors = parse_keymap(source)
+                self.layer.source = source
             case _:
                 msg = f"Unsupported parameter type {type(value)}"
                 raise TypeError(msg)
