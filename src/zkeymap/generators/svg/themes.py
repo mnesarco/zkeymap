@@ -22,13 +22,16 @@ light = """
     }
 
     .behavior-muted .key-cap {
-        stroke: #ff0000;
+        stroke: #0080ff;
         stroke-width: 0.1;
         stroke-dasharray: 0.3, 0.3;
         stroke-dashoffset: 0;
-        fill: #fefefe;
-        opacity: 0.6;
+        fill: #efefef;
+    }
 
+    .behavior-transparent .key-tap-text {
+        fill: c0c0c0;
+        opacity: 0.3;
     }
 
     .key-switch {
