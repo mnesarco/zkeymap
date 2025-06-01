@@ -36,8 +36,8 @@ keymap = f"""
     {EXPR_RAW}
     {WORD}
 
-    NONE: "xxxxx" | "🛇"
-    TRANSPARENT: "_____" | "▿"
+    NONE: "xxxxx" | "🛇" | "⌽"
+    TRANSPARENT: "_____" | "▽"
     STICKY: "~"
     SEP: "/"
     ABSOLUTE: "!"
